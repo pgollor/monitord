@@ -29,6 +29,8 @@ case "$host_os" in
 		MYSQLLIBDLL=[libmysqlclient.so] 
 		ACTIVEMQLIBNAME=[activemq-cpp]
 		ACTIVEMQDLL=[libactivemq-cpp.so]
+		MQTTLIBNAME=[mosquittopp]
+		MQTTLIBDLL=[libmosquittopp.so]
 		;;
 	mingw32*)
 		WINDOWS=true
@@ -104,6 +106,11 @@ AC_ARG_WITH([activemq],
 	[enable experimental ActiveMQ support (default is no)])],
 	[use_als=$withval],
 	[use_activemq=no])
+AC_ARG_WITH([mqtt],
+	[AC_HELP_STRING([--with-mqtt],
+	[enable experimental mqtt support (default is no)])],
+	[],
+	[use_mqtt=no])
 AC_ARG_WITH([lame],
 	[AC_HELP_STRING([--with-lame],
 	[enable experimental mp3 lame support (default is no)])],
@@ -123,6 +130,7 @@ AC_ARG_WITH([libvorbis],
 if test x$plugins == xno; then
 	lame=false
 	mysql=false
+	mqtt=false
 	if test "x$use_mysql" != xno; then
 		AC_MSG_ERROR([[mysql support is not supported without --enable-plugins]])
 	fi
@@ -141,13 +149,40 @@ if test x$plugins == xno; then
 	if test "x$use_activemq" != xno; then
 		AC_MSG_ERROR([[ActiveMQ support is not supported without --enable-plugins]])
 	fi
+	if test "x$use_mqtt" != xno; then
+		AC_MSG_ERROR([[MQTT support is not supported without --enable-plugins]])
+	fi
 else
 	if test "x$use_mysql" != xno; then
-	 AC_CHECK_HEADER([mysql/mysql.h],
-                     ,
-                     [AC_MSG_ERROR([mysql.h not found])])
-	
+		AC_CHECK_HEADER([mysql/mysql.h],
+		,
+		[AC_MSG_ERROR([mysql.h not found])])
 	fi
+
+	AC_LANG_PUSH([C++])
+	if test "x$use_mqtt" != xno; then
+		AC_CHECK_HEADER([mosquittopp.h],
+		,
+		[AC_MSG_ERROR([mosquittopp.h not found])])
+	fi
+	AC_LANG_POP([C++])	
+	
+	# search for _init c function in c++ mosquittopp lib
+	LIBMQTTCLIENT=
+		AS_IF([test "x$use_mqtt" != xno] ,
+			[AC_CHECK_LIB([$MQTTLIBNAME],[_init],
+				[AC_SUBST([LIBMQTTCLIENT], ["-l$MQTTLIBNAME"])
+				AC_DEFINE([HAVE_LIBMQTTCLIENT], [1],
+						[Define if you have libmosquittopp])
+				mqtt=true
+				],
+				[if test "x$use_mqtt" != xcheck; then
+					mqtt=true
+					AC_MSG_FAILURE(
+						[--with-mqtt was given, but test for $MQTTLIBNAME failed])
+				fi
+			])
+		])
 		
 	LIBMYSQLCLIENT=
 		AS_IF([test "x$use_mysql" != xno] ,
@@ -244,6 +279,7 @@ AM_CONDITIONAL(LAME, test x$lame = xtrue)
 AM_CONDITIONAL(SOX, test x$sox = xtrue)
 AM_CONDITIONAL(VORBIS, test x$vorbis = xtrue)
 AM_CONDITIONAL(ACTIVEMQ, test x$activemq = xtrue)
+AM_CONDITIONAL(MQTT, test x$mqtt = xtrue)
 
 AC_SUBST(LUA_LIB)
 AC_SUBST(LUA_INCLUDE)
