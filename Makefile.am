@@ -186,6 +186,33 @@ monitord_plugin_libmplugin_activemq_la_LIBS=\
 endif
 
 # --------------------------------------------------------
+# Monitor-Plugin: MQTT
+#
+
+if MQTT
+pkglib_LTLIBRARIES+= \
+	monitord/plugins/libmplugin_mqtt.la
+
+monitord_plugins_libmplugin_mqtt_la_SOURCES=\
+	${monitord_plugins_common} \
+	monitord/plugins/mplugin.cpp \
+	monitord/plugins/libmplugin_mqtt.cpp
+
+monitord_plugins_libmplugin_mqtt_la_CPPFLAGS =\
+	${monitord_monitord_CPPFLAGS} \
+	${DLL}
+
+monitord_plugins_libmplugin_mqtt_la_LDFLAGS=\
+	-no-undefined \
+	${LIBQTTCLIENT} \
+	${DLL}
+
+monitord_plugins_libmplugin_mqtt_la_LIBS=\
+	${LIBMQTTCLIENT}
+
+endif # mqtt Support ?
+
+# --------------------------------------------------------
 # Audio-Plugin: Recorder
 #
 monitord_plugins_libmplugin_audiorecorder_la_SOURCES=\
