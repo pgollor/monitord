@@ -11,7 +11,7 @@
 
 #include "mplugin.h"
 #include "../MonitorLogging.h"
-
+#include <mosquittopp.h>
 
 
 class MonitorPlugInMQTT : public MonitorPlugIn
@@ -35,7 +35,9 @@ class MonitorPlugInMQTT : public MonitorPlugIn
 
 
 	// variables
-	bool bConnected = false;
+	bool bConnected;
+	mosqpp::mosquittopp *pMQTT;
+	std::string strTopic;
 };
 
 
