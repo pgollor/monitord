@@ -204,7 +204,7 @@ monitord_plugins_libmplugin_mqtt_la_CPPFLAGS =\
 
 monitord_plugins_libmplugin_mqtt_la_LDFLAGS=\
 	-no-undefined \
-	${LIBQTTCLIENT} \
+	${LIBMQTTCLIENT} \
 	${DLL}
 
 monitord_plugins_libmplugin_mqtt_la_LIBS=\
