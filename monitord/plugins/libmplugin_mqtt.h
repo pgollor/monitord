@@ -14,6 +14,23 @@
 #include <mosquittopp.h>
 
 
+
+class myMQTT : public mosqpp::mosquittopp
+{
+public:
+	explicit myMQTT();
+	~myMQTT();
+
+	void send(const std::string &topic, const std::string &message);
+
+	void on_connect(int rc);
+	void on_disconnect(int rc);
+	void on_message(const struct mosquitto_message *message);
+	void on_subcribe(int mid, int qos_count, const int *granted_qos);
+};
+
+
+
 class MonitorPlugInMQTT : public MonitorPlugIn
 {
  public:
@@ -34,9 +51,13 @@ class MonitorPlugInMQTT : public MonitorPlugIn
 	virtual void Show();
 
 
+private:
+	// functions
+	void check(const int returnValue, const std::string &errorMessage, const bool throwException = true);
+
 	// variables
 	bool bConnected;
-	mosqpp::mosquittopp *pMQTT;
+	myMQTT *pMQTT;
 	std::string strTopic;
 };
 

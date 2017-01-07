@@ -9,6 +9,9 @@
 #include "libmplugin_mqtt.h"
 #include <iostream>
 
+#include "../MonitorLogging.h"
+#include "../MonitorExceptions.h"
+
 
 #ifndef DD
 	#define DD(msg) std::cout << "[" << __FUNCTION__ << "]: " << msg << std::endl
@@ -51,18 +54,19 @@ bool MonitorPlugInMQTT::initProcessing(class MonitorConfiguration* configPtr, XM
 
 	if (pMQTT == nullptr)
 	{
-		pMQTT = new mosqpp::mosquittopp(NULL, true);
+		pMQTT = new myMQTT();
 	}
 
 	// connect to mqtt server
-	ret = pMQTT->connect_async(hostname.c_str(), port);
-	ret = pMQTT->loop_start();
+	check(pMQTT->connect_async(hostname.c_str(), port), "Could not connect to MQTT server!");
+	check(pMQTT->loop_start(), "Could not start loop!");
 
-	if (ret != MOSQ_ERR_SUCCESS)
-	{
-		MonitorException("Could not connect to MQTT server!");
-	}
+	// transmit version string
+	std::string topic = strTopic + "/version";
+	std::string msg = VERSION;
+	pMQTT->publish(NULL, topic.c_str(), msg.length(), msg.c_str());
 
+	// logging output
 	LOG_INFO("connected successfull");
 
 	return true;
@@ -101,8 +105,10 @@ bool MonitorPlugInMQTT::processResult(class ModuleResultBase *pRes)
 
 	msg += "}";
 
+	LOG_DEBUG(msg);
+
 	// transmit message
-	pMQTT->publish(NULL, topic.c_str(), msg.length(), msg.c_str());
+	check(pMQTT->publish(NULL, topic.c_str(), msg.length(), msg.c_str()), "Could not publish", false);
 
 
 	return true;
@@ -119,10 +125,10 @@ bool MonitorPlugInMQTT::quitProcessing()
 	}
 
 	// disable loop
-	pMQTT->loop_stop();
+	check(pMQTT->loop_stop(), "Could not stop loop", false);
 
 	// disconnect from server
-	pMQTT->disconnect();
+	check(pMQTT->disconnect(), "Could not disconnect", false);
 
 	LOG_INFO("disconnecting");
 
@@ -134,4 +140,61 @@ void MonitorPlugInMQTT::Show()
 {
 	DD("start");
 }
+
+
+void MonitorPlugInMQTT::check(const int returnValue, const std::string& errorMessage, const bool throwException)
+{
+	if (returnValue != MOSQ_ERR_SUCCESS)
+	{
+		LOG_ERROR(errorMessage);
+		if (throwException)
+		{
+			MonitorException(errorMessage.c_str());
+		}
+	}
+}
+
+
+
+// +++++ myMQTT +++++ //
+
+myMQTT::myMQTT() : mosqpp::mosquittopp(NULL, true)
+{
+}
+
+
+myMQTT::~myMQTT()
+{
+}
+
+
+void myMQTT::send(const std::string &topic, const std::string &message)
+{
+	publish(NULL, topic.c_str(), message.length(), message.c_str());
+}
+
+
+void myMQTT::on_connect(int rc)
+{
+	DD("on_connect");
+}
+
+
+void myMQTT::on_disconnect(int rc)
+{
+	DD("on_disconnect");
+}
+
+
+void myMQTT::on_message(const struct mosquitto_message *message)
+{
+	DD("on_message");
+}
+
+
+void myMQTT::on_subcribe(int mid, int qos_count, const int *granted_qos)
+{
+	DD("on_subcribe");
+}
+
 
