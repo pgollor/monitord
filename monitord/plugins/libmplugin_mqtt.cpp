@@ -108,8 +108,8 @@ bool MonitorPlugInMQTT::processResult(class ModuleResultBase *pRes)
 	LOG_DEBUG(msg);
 
 	// transmit message
-	check(pMQTT->publish(NULL, topic.c_str(), msg.length(), msg.c_str()), "Could not publish", false);
-
+	//check(pMQTT->publish(NULL, topic.c_str(), msg.length(), msg.c_str()), "Could not publish", false);
+	pMQTT->send(topic, msg);
 
 	return true;
 }
@@ -168,7 +168,7 @@ myMQTT::~myMQTT()
 }
 
 
-void myMQTT::send(const std::string &topic, const std::string &message)
+void myMQTT::send(const std::string& topic, const std::string& message)
 {
 	publish(NULL, topic.c_str(), message.length(), message.c_str());
 }
@@ -176,19 +176,25 @@ void myMQTT::send(const std::string &topic, const std::string &message)
 
 void myMQTT::on_connect(int rc)
 {
-	DD("on_connect");
+	LOG_INFO("on_connect");
 }
 
 
 void myMQTT::on_disconnect(int rc)
 {
-	DD("on_disconnect");
+	LOG_INFO("on_disconnect");
 }
 
 
 void myMQTT::on_message(const struct mosquitto_message *message)
 {
-	DD("on_message");
+	char payload[message->payloadlen];
+	memcpy(payload, message->payload, message->payloadlen);
+
+	std::string topic = message->topic;
+	std::string msg = payload;
+
+	LOG_DEBUG("Got message: " << topic << " - " << msg);
 }
 
 
@@ -196,5 +202,4 @@ void myMQTT::on_subcribe(int mid, int qos_count, const int *granted_qos)
 {
 	DD("on_subcribe");
 }
-
 

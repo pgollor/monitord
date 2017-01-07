@@ -21,7 +21,7 @@ public:
 	explicit myMQTT();
 	~myMQTT();
 
-	void send(const std::string &topic, const std::string &message);
+	void send(const std::string& topic, const std::string& message);
 
 	void on_connect(int rc);
 	void on_disconnect(int rc);
@@ -45,7 +45,7 @@ class MonitorPlugInMQTT : public MonitorPlugIn
 	virtual ~MonitorPlugInMQTT();
 
 	// virtual functions
-	virtual bool initProcessing(class MonitorConfiguration* configPtr,XMLNode config);
+	virtual bool initProcessing(class MonitorConfiguration* configPtr, XMLNode config);
 	virtual bool processResult(class ModuleResultBase *pRes);
 	virtual bool quitProcessing();
 	virtual void Show();
