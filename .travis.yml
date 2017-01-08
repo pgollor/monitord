@@ -19,7 +19,9 @@ before_install:
   
   
 script:
-  - cd $TRAVIS_BUILD_DIR
+	- ls -l
+  - cd $TRAVIS_BUILD_DIR/monitord
+	- ls -l
   - aclocal -Im4
   - ./auogen.sh
   - ./configure --exec-prefix=$PWD/build/ --prefix=$PWD/build/ --enable-plugins --with-mqtt --with-alsa --with-lame -with-mysql --with-lua-includes=/usr/include/lua5.1 --with-lua-suffix="5.1"
