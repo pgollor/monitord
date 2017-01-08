@@ -1,20 +1,20 @@
 sudo: rquired
 
 language:
-	- cpp
+  - cpp
 
 os:
-	- linux
+  - linux
 
 before_install:
-	- sudo apt-get -qq update
-	- sudo apt-get install -y autoconf automake libtool pkg-config alsa-base alas-utils g++ make libasound2-dev libmp3lame-dev libtolua++5.1-dev mysql-client libmysql++-dev libmosquitto-dev libmosquittopp-dev
+  - sudo apt-get -qq update
+  - sudo apt-get install -y autoconf automake libtool pkg-config alsa-base alas-utils g++ make libasound2-dev libmp3lame-dev libtolua++5.1-dev mysql-client libmysql++-dev libmosquitto-dev libmosquittopp-dev
   
   
 script:
-	- cd $TRAVIS_BUILD_DIR
-	- aclocal -Im4
-	- ./auogen.sh
-	- ./configure --exec-prefix=$PWD/build/ --prefix=$PWD/build/ --enable-plugins --with-mqtt --with-alsa --with-lame -with-mysql --with-lua-includes=/usr/include/lua5.1 --with-lua-suffix="5.1"
-	- make
-	- make install
+  - cd $TRAVIS_BUILD_DIR
+  - aclocal -Im4
+  - ./auogen.sh
+  - ./configure --exec-prefix=$PWD/build/ --prefix=$PWD/build/ --enable-plugins --with-mqtt --with-alsa --with-lame -with-mysql --with-lua-includes=/usr/include/lua5.1 --with-lua-suffix="5.1"
+  - make
+  - make install
