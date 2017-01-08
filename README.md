@@ -1,5 +1,7 @@
 # monitord
 
+[![Linux build status](https://travis-ci.org/pgollor/monitord.svg)](https://travis-ci.org/pgollor/monitord)
+
 monitord ist ein Funkauswerter fuer die Protokolle ZVEI, Pocsag und FMS.
 Das eigentliche monitord-Projekt liegt auf www.monitord.de.
 Da die Entwicklung allerdings nicht mehr sonderlich aktiv ist, habe ich hier bei GitHub das Repository geklont.
