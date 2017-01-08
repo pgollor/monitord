@@ -159,13 +159,19 @@ else
 		[AC_MSG_ERROR([mysql.h not found])])
 	fi
 
+	# mosuitoo.h and mosquittopp.h is required
+	if test "x$use_mqtt" != xno; then
+		AC_CHECK_HEADER([mosquitto.h],
+		,
+		[AC_MSG_ERROR([mosquitto.h not found])])
+	fi
 	AC_LANG_PUSH([C++])
 	if test "x$use_mqtt" != xno; then
 		AC_CHECK_HEADER([mosquittopp.h],
 		,
 		[AC_MSG_ERROR([mosquittopp.h not found])])
 	fi
-	AC_LANG_POP([C++])	
+	AC_LANG_POP([C++])
 	
 	# search for _init c function in c++ mosquittopp lib
 	LIBMQTTCLIENT=
