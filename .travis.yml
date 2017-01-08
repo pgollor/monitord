@@ -6,9 +6,15 @@ language:
 os:
   - linux
 
+dist:
+	- xenial
+
+compiler:
+  - g++
+
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y autoconf automake libtool pkg-config alsa-base alas-utils g++ make libasound2-dev libmp3lame-dev libtolua++5.1-dev mysql-client libmysql++-dev libmosquitto-dev libmosquittopp-dev
+  - sudo apt-get install -y autoconf automake libtool pkg-config alsa-base alsa-utils g++ make libasound2-dev libmp3lame-dev libtolua++5.1-dev mysql-client libmysql++-dev libmosquitto-dev libmosquittopp-dev
   
   
 script:
