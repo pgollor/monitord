@@ -7,7 +7,7 @@ os:
   - linux
 
 dist:
-	- xenial
+  - xenial
 
 compiler:
   - g++
