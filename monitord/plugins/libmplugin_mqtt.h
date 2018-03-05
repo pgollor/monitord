@@ -56,9 +56,9 @@ private:
 	void check(const int returnValue, const std::string &errorMessage, const bool throwException = true);
 
 	// variables
-	bool bConnected;
-	myMQTT *pMQTT;
-	std::string strTopic;
+	bool bConnected = false;
+	myMQTT *pMQTT = nullptr;
+	std::string strTopic = "";
 };
 
 

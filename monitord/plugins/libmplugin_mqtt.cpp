@@ -25,17 +25,12 @@
 MonitorPlugInMQTT::MonitorPlugInMQTT()
 {
 	DD("start");
-
-	// init vars, TODO: use c++11 declaration in header file
-	bConnected = false;
-	pMQTT = nullptr;
-	strTopic = "";
 }
 
 
 MonitorPlugInMQTT::~MonitorPlugInMQTT()
 {
-	DD("start");
+	DD("stop");
 }
 
 
@@ -89,6 +84,9 @@ bool MonitorPlugInMQTT::processResult(class ModuleResultBase *pRes)
 	topic += "/";
 	topic += typ;
 	msg += "{";
+
+	// add timestamp
+	msg += "\"timestamp\":" + (*pRes)["timestamp"] + ", ";
 
 	if (typ == "fms")
 	{
