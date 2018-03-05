@@ -13,6 +13,9 @@
 #include "../MonitorLogging.h"
 #include <mosquittopp.h>
 
+#ifndef nullptr
+	#define nullptr NULL
+#endif
 
 
 class myMQTT : public mosqpp::mosquittopp

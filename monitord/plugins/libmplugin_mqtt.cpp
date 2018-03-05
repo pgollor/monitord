@@ -16,9 +16,6 @@
 #ifndef DD
 	#define DD(msg) std::cout << "[" << __FUNCTION__ << "]: " << msg << std::endl
 #endif
-#ifndef nullptr
-	#define nullptr NULL
-#endif
 
 
 
